@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -9,7 +9,14 @@ import {
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useRecoilState } from "recoil";
-import { cartState } from "@/app/recoil/atom";
+import { cartItemState, cartState, subtotal } from "@/app/recoil/atom";
+import { useSession } from "next-auth/react";
+import {
+  AddToCart,
+  decreaseCartItemQuantity,
+  getCartByEmail,
+  removeFromCart,
+} from "@/actions/Cart";
 
 const products = [
   {
@@ -40,7 +47,88 @@ const products = [
 ];
 
 export default function Cart() {
+  const [products, setProducts] = useRecoilState<any>(cartItemState);
   const [open, setOpen] = useRecoilState(cartState);
+  const { data: session } = useSession();
+  const [total, setTotal] = useRecoilState(subtotal);
+
+  const handelIncrease = async (productId: string) => {
+    if (session?.user?.email) {
+      try {
+        const addedProduct = await AddToCart(session.user.email, productId);
+        console.log(addedProduct);
+        const data: any = await getCartByEmail(session.user.email);
+        setProducts(data.cartItems);
+        setTotal(data.subtotal);
+      } catch (error) {
+        console.error("Failed to add product to cart:", error);
+      }
+    } else {
+      console.log("User is not logged in");
+    }
+  };
+
+  const handelDecrease = async (productId: string) => {
+    if (session?.user?.email) {
+      try {
+        // Call the function to decrease the quantity of the product
+        const result = await decreaseCartItemQuantity(
+          session.user.email,
+          productId
+        );
+        console.log(result);
+
+        // Fetch the updated cart to reflect changes in the UI
+        const data: any = await getCartByEmail(session.user.email);
+        setTotal(data.subtotal);
+        setProducts(data.cartItems);
+      } catch (error) {
+        console.error("Failed to decrease product quantity:", error);
+      }
+    } else {
+      console.log("User is not logged in");
+    }
+  };
+
+  const handelRemove = async (productId: string) => {
+    if (session?.user?.email) {
+      try {
+        // Call the function to remove the product from the cart
+        const result = await removeFromCart(session.user.email, productId);
+        console.log(result);
+
+        // Fetch the updated cart to reflect changes in the UI
+        const data: any = await getCartByEmail(session.user.email);
+        setTotal(data.subtotal);
+        setProducts(data.cartItems);
+      } catch (error) {
+        console.error("Failed to remove product from cart:", error);
+      }
+    } else {
+      console.log("User is not logged in");
+    }
+  };
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      if (session?.user?.email) {
+        try {
+          const cartData: any = await getCartByEmail(session.user.email);
+          if (cartData?.cartItems) {
+            setProducts(cartData.cartItems);
+            setTotal(cartData.subtotal);
+            console.log("products", cartData);
+          } else {
+            console.error("No cart items found");
+          }
+        } catch (error) {
+          console.error("Failed to fetch cart items:", error);
+        }
+      }
+    };
+
+    fetchCart();
+  }, [session, setProducts, setOpen]);
 
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-10">
@@ -81,12 +169,12 @@ export default function Cart() {
                         role="list"
                         className="-my-6 divide-y divide-gray-200"
                       >
-                        {products.map((product) => (
+                        {products.map((product: any) => (
                           <li key={product.id} className="flex py-6">
                             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                               <img
-                                alt={product.imageAlt}
-                                src={product.imageSrc}
+                                alt={product.product.imageurl}
+                                src={product.product.imageurl}
                                 className="h-full w-full object-cover object-center"
                               />
                             </div>
@@ -94,22 +182,46 @@ export default function Cart() {
                             <div className="ml-4 flex flex-1 flex-col">
                               <div>
                                 <div className="flex justify-between text-base font-medium text-gray-900">
-                                  <h3>
-                                    <a href={product.href}>{product.name}</a>
+                                  <h3 className=" uppercase">
+                                    <a href={`/product/${product.product.id}`}>
+                                      {product.product.name}
+                                    </a>
                                   </h3>
-                                  <p className="ml-4">{product.price}</p>
+                                  <p className="ml-4">
+                                    Rs.{product.product.price}
+                                    {/* {setTotal(total + product.product.price)} */}
+                                  </p>
                                 </div>
                                 <p className="mt-1 text-sm text-gray-500">
                                   {product.color}
                                 </p>
                               </div>
                               <div className="flex flex-1 items-end justify-between text-sm">
+                                <button
+                                  onClick={async () => {
+                                    handelIncrease(product.product.id);
+                                  }}
+                                  className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                                >
+                                  +
+                                </button>
                                 <p className="text-gray-500">
                                   Qty {product.quantity}
                                 </p>
+                                <button
+                                  onClick={async () => {
+                                    handelDecrease(product.product.id);
+                                  }}
+                                  className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                                >
+                                  -
+                                </button>
 
                                 <div className="flex">
                                   <button
+                                    onClick={async () => {
+                                      handelRemove(product.product.id);
+                                    }}
                                     type="button"
                                     className="font-medium text-indigo-600 hover:text-indigo-500"
                                   >
@@ -128,7 +240,7 @@ export default function Cart() {
                 <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                   <div className="flex justify-between text-base font-medium text-gray-900">
                     <p>Subtotal</p>
-                    <p>$262.00</p>
+                    <p>Rs.{total}</p>
                   </div>
                   <p className="mt-0.5 text-sm text-gray-500">
                     Shipping and taxes calculated at checkout.
