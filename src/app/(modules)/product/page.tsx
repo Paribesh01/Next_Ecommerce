@@ -1,6 +1,6 @@
 import ProductsTable from "@/components/ProductTable";
-import ProductGrid from "@/components/user/ProductGrid";
+import ProductList from "@/components/user/ProductList";
 
 export default function () {
-  return <ProductGrid />;
+  return <ProductList />;
 }

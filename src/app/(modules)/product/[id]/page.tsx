@@ -11,8 +11,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   }
 
   return (
-    <p>
+    <div>
       <ProductOverview product={product} />
-    </p>
+    </div>
   );
 }
