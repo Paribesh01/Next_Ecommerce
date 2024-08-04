@@ -1,5 +1,5 @@
 import { GetProductById } from "@/actions/GetProduct";
-import ProductOverview from "@/components/user/ProductOverview";
+import ProductOverviews from "@/components/user/ProductOverviews";
 import { notFound } from "next/navigation";
 import { useRouter } from "next/router";
 
@@ -12,7 +12,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <div>
-      <ProductOverview product={product} />
+      <ProductOverviews product={product} />
     </div>
   );
 }
