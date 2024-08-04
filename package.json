@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev:docker": "prisma migrate deploy & npm run dev",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -16,6 +17,7 @@
     "bcrypt": "^5.1.1",
     "next": "14.2.5",
     "next-auth": "^4.24.7",
+    "next-ecommerce": "file:",
     "prisma": "^5.17.0",
     "react": "^18",
     "react-dom": "^18",
