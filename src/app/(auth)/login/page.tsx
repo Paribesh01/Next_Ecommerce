@@ -2,11 +2,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getCsrfToken } from "next-auth/react";
+import { getCsrfToken, useSession } from "next-auth/react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function SignIn() {
   const [csrfToken, setCsrfToken] = useState<string | null>(null);
+  const session = useSession();
+  if (session) {
+    redirect("/");
+  }
 
   useEffect(() => {
     const fetchCsrfToken = async () => {
