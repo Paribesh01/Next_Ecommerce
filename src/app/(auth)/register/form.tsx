@@ -61,6 +61,8 @@ export default function RegisterForm() {
         >
           <Image
             className="w-8 h-8 mr-2"
+            width={"5"}
+            height={"6"}
             src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
             alt="logo"
           />

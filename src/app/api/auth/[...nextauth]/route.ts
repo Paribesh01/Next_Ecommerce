@@ -21,7 +21,7 @@ const handler = NextAuth({
         });
 
         if (user && bcrypt.compareSync(credentials.password, user.password)) {
-          return { id: user.id, name: user.username, email: user.email };
+          return { id: user.id, name: user.username, email: user.email,role:user.role };
         }
 
         return null;
@@ -32,18 +32,20 @@ const handler = NextAuth({
     strategy: 'jwt',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }:any) {
       if (user) {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
+        token.role = user.role;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }:any) {
       if (session.user) {
         session.user.name = token.name;
         session.user.email = token.email;
+        session.user.role = token.role
       }
       return session;
     },
