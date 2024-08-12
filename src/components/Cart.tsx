@@ -18,6 +18,7 @@ import {
   removeFromCart,
 } from "@/actions/Cart";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Cart() {
   const [products, setProducts] = useRecoilState<any>(cartItemState);
@@ -145,7 +146,7 @@ export default function Cart() {
                         {products.map((product: any) => (
                           <li key={product.id} className="flex py-6">
                             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                              <img
+                              <Image
                                 alt={product.product.imageurl}
                                 src={product.product.imageurl}
                                 className="h-full w-full object-cover object-center"

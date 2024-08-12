@@ -19,6 +19,7 @@
     "next-auth": "^4.24.7",
     "next-ecommerce": "file:",
     "prisma": "^5.17.0",
+    "razorpay": "^2.9.4",
     "react": "^18",
     "react-dom": "^18",
     "recoil": "^0.7.7"
