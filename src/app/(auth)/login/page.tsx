@@ -8,8 +8,8 @@ import { redirect } from "next/navigation";
 
 export default function SignIn() {
   const [csrfToken, setCsrfToken] = useState<string | null>(null);
-  const session = useSession();
-  if (session) {
+  const session: any = useSession();
+  if (session.user) {
     redirect("/");
   }
 
