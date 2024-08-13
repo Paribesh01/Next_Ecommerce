@@ -4,6 +4,8 @@ import "./globals.css";
 import { Provider } from "./provider";
 import Cart from "@/components/Cart";
 import NavBar from "@/components/Navbar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
 

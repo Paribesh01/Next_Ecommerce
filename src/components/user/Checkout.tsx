@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 import { useRecoilState } from "recoil";
 
 const CheckoutForm = () => {
@@ -56,6 +57,8 @@ const CheckoutForm = () => {
           setAddress("");
           setLandmark("");
           setCity("");
+
+          toast.success("Order is Created");
         }
       }
       // Optionally show a success message

@@ -4,6 +4,7 @@ import { AddToCart, getCartByEmail } from "@/actions/Cart";
 import { cartItemState, subtotal } from "@/app/recoil/atom";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { useRecoilState } from "recoil";
 
 export default function ProductOverviews(params: any) {
@@ -17,6 +18,8 @@ export default function ProductOverviews(params: any) {
       try {
         const addedProduct = await AddToCart(session.user.email, product.id);
         console.log(addedProduct);
+        // setCartProduct(previous + added Product ) do this
+        toast.success("Product is added to the cart.");
         const data: any = await getCartByEmail(session.user.email);
         setCartProducts(data.cartItems);
         setTotal(data.subtotal);

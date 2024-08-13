@@ -29,6 +29,7 @@ export default function Cart() {
   const handelIncrease = async (productId: string) => {
     if (session?.user?.email) {
       try {
+        console.log(products, "Products:::");
         const addedProduct = await AddToCart(session.user.email, productId);
         console.log(addedProduct);
         const data: any = await getCartByEmail(session.user.email);
@@ -146,7 +147,7 @@ export default function Cart() {
                         {products.map((product: any) => (
                           <li key={product.id} className="flex py-6">
                             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                              <Image
+                              <img
                                 alt={product.product.imageurl}
                                 src={product.product.imageurl}
                                 className="h-full w-full object-cover object-center"
