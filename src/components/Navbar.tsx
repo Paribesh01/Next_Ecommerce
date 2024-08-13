@@ -14,7 +14,7 @@ import Link from "next/link";
 import { useRecoilState } from "recoil";
 
 const navigation = [
-  { name: "Home", href: "/home", current: true },
+  { name: "Home", href: "/", current: true },
   { name: "Products", href: "/product", current: false },
 ];
 
