@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 export default function SignIn() {
   const [csrfToken, setCsrfToken] = useState<string | null>(null);
   const session: any = useSession();
-  if (session.user) {
+  if (session) {
     redirect("/");
   }
 
